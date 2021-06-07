@@ -10,16 +10,16 @@ enum {
 	ATTACK
 }
 
-var state = MOVE
-var velocity = Vector2.ZERO
+var state := MOVE
+var velocity := Vector2.ZERO
 
-onready var animationTree = $AnimationTree
-onready var animationState = animationTree.get("parameters/playback")
+onready var animationTree := ($AnimationTree as AnimationTree)
+onready var animationState: AnimationNodeStateMachinePlayback = animationTree.get("parameters/playback")
 
-func _ready():
+func _ready() -> void:
 	animationTree.active = true
 
-func _physics_process(delta: float):
+func _physics_process(delta: float) -> void:
 	match state:
 		MOVE:
 			move_state(delta)
@@ -30,8 +30,8 @@ func _physics_process(delta: float):
 		ATTACK:
 			attack_state(delta)
 
-func move_state(delta: float):
-	var input_vector = Vector2.ZERO
+func move_state(delta: float) -> void:
+	var input_vector := Vector2.ZERO
 	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
 	input_vector.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
 	input_vector = input_vector.normalized()
@@ -51,9 +51,9 @@ func move_state(delta: float):
 	if Input.is_action_just_pressed("attack"):
 		state = ATTACK
 
-func attack_state(_delta: float):
+func attack_state(_delta: float) -> void:
 	velocity = Vector2.ZERO
 	animationState.travel("Attack")
 
-func attack_animation_finished():
+func attack_animation_finished() -> void:
 	state = MOVE
