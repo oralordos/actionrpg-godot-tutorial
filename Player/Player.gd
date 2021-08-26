@@ -22,6 +22,7 @@ onready var swordHitbox := $HitboxPivot/SwordHitbox
 onready var hurtbox := $Hurtbox
 
 func _ready() -> void:
+	randomize()
 	var error_code := stats.connect("no_health", self, "queue_free")
 	assert(error_code == 0)
 	animationTree.active = true
