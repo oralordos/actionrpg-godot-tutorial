@@ -17,12 +17,13 @@ var knockback := Vector2.ZERO
 
 onready var state = pick_random_state([IDLE, WANDER])
 
-onready var sprite := $AnimatedSprite
+onready var sprite := $AnimatedSprite as AnimatedSprite
 onready var stats := $Stats
 onready var playerDetectionZone := $PlayerDetectionZone
 onready var hurtbox := $Hurtbox
 onready var softCollision := $SoftCollision
 onready var wanderController := $WanderController
+onready var animationPlayer := $AnimationPlayer as AnimationPlayer
 
 func _physics_process(delta: float) -> void:
 	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
@@ -74,7 +75,7 @@ func pick_random_state(state_list: Array):
 func _on_Hurtbox_area_entered(area) -> void:
 	stats.health -= area.damage
 	knockback = area.knockback_vector * 120
-	hurtbox.start_invincibility(0.2)
+	hurtbox.start_invincibility(0.4)
 	hurtbox.create_hit_effect()
 
 func _on_Stats_no_health():
@@ -82,3 +83,9 @@ func _on_Stats_no_health():
 	var enemyDeathEffect := EnemyDeathEffect.instance()
 	enemyDeathEffect.position = position
 	get_parent().add_child_below_node(self, enemyDeathEffect)
+
+func _on_Hurtbox_invincibility_started():
+	animationPlayer.play("Start")
+
+func _on_Hurtbox_invincibility_ended():
+	animationPlayer.play("Stop")
